@@ -3,7 +3,7 @@ const AllJobs = () => {
     <div>
       <h1>ALL JOBS</h1>
     </div>
-  );
-};
+  )
+}
 
-export default AllJobs;
+export default AllJobs

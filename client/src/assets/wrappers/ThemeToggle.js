@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const Wrapper = styled.button`
   background: transparent;
@@ -12,6 +12,6 @@ const Wrapper = styled.button`
     font-size: 1.15rem;
     color: var(--text-color);
   }
-`;
+`
 
-export default Wrapper;
+export default Wrapper

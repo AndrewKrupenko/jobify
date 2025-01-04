@@ -1,8 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom'
 
-import main from "../assets/images/main.svg";
-import Wrapper from "../assets/wrappers/LandingPage";
-import { Logo } from "../components";
+import main from 'assets/images/main.svg'
+import Wrapper from 'assets/wrappers/LandingPage'
+import { Logo } from 'components'
 
 const Landing = () => {
   return (
@@ -32,7 +32,7 @@ const Landing = () => {
         <img src={main} alt="job hunt" className="img main-img" />
       </div>
     </Wrapper>
-  );
-};
+  )
+}
 
-export default Landing;
+export default Landing

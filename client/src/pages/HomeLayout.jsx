@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet } from 'react-router-dom'
 
 const HomeLayout = () => {
   return (
@@ -7,7 +7,7 @@ const HomeLayout = () => {
       {/* <h1>home layout</h1> */}
       <Outlet />
     </>
-  );
-};
+  )
+}
 
-export default HomeLayout;
+export default HomeLayout

@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link } from 'react-router-dom'
 
-import { Logo, FormRow } from "../components";
-import Wrapper from "../assets/wrappers/RegisterAndLoginPage";
+import { Logo, FormRow } from 'components'
+import Wrapper from 'assets/wrappers/RegisterAndLoginPage'
 
 const Register = () => {
   return (
@@ -27,7 +27,7 @@ const Register = () => {
         </p>
       </form>
     </Wrapper>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register

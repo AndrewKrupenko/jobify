@@ -3,7 +3,7 @@ const AddJob = () => {
     <div>
       <h1>Add Job</h1>
     </div>
-  );
-};
+  )
+}
 
-export default AddJob;
+export default AddJob

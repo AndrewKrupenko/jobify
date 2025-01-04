@@ -1,34 +1,34 @@
-import { Outlet } from "react-router-dom";
-import { useState, createContext, useContext } from "react";
+import { Outlet } from 'react-router-dom'
+import { useState, createContext, useContext } from 'react'
 
-import Wrapper from "../assets/wrappers/Dashboard";
-import { Navbar, BigSidebar, SmallSidebar } from "../components";
-import { checkDefaultTheme } from "../App.jsx";
+import Wrapper from 'assets/wrappers/Dashboard'
+import { Navbar, BigSidebar, SmallSidebar } from 'components'
+import { checkDefaultTheme } from '../App.jsx'
 
-const DashboardContext = createContext();
+const DashboardContext = createContext()
 
 const Dashboard = () => {
   // temp
-  const user = { name: "john" };
+  const user = { name: 'john' }
 
-  const [showSidebar, setShowSidebar] = useState(false);
-  const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme());
+  const [showSidebar, setShowSidebar] = useState(false)
+  const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme())
 
   const toggleDarkTheme = () => {
-    const newThemeValue = !isDarkTheme;
+    const newThemeValue = !isDarkTheme
 
-    setIsDarkTheme(newThemeValue);
-    document.body.classList.toggle("dark-theme", newThemeValue);
-    localStorage.setItem("darkTheme", newThemeValue);
-  };
+    setIsDarkTheme(newThemeValue)
+    document.body.classList.toggle('dark-theme', newThemeValue)
+    localStorage.setItem('darkTheme', newThemeValue)
+  }
 
   const toggleSidebar = () => {
-    setShowSidebar(!showSidebar);
-  };
+    setShowSidebar(!showSidebar)
+  }
 
   const logoutUser = async () => {
-    console.log("logout user");
-  };
+    console.log('logout user')
+  }
 
   return (
     <DashboardContext.Provider
@@ -54,9 +54,9 @@ const Dashboard = () => {
         </main>
       </Wrapper>
     </DashboardContext.Provider>
-  );
-};
+  )
+}
 
-export const useDashboardContext = () => useContext(DashboardContext);
+export const useDashboardContext = () => useContext(DashboardContext)
 
-export default Dashboard;
+export default Dashboard

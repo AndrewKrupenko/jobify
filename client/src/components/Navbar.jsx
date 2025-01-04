@@ -1,13 +1,11 @@
-import { FaAlignLeft } from "react-icons/fa";
+import { FaAlignLeft } from 'react-icons/fa'
 
-import { useDashboardContext } from "../pages/DashboardLayout";
-import Wrapper from "../assets/wrappers/Navbar";
-import Logo from "./Logo";
-import LogoutContainer from "./LogoutContainer.jsx";
-import ThemeToggle from "./ThemeToggle.jsx";
+import { useDashboardContext } from 'pages/DashboardLayout'
+import Wrapper from 'assets/wrappers/Navbar'
+import { Logo, ThemeToggle, LogoutContainer } from 'components'
 
 const Navbar = () => {
-  const { toggleSidebar } = useDashboardContext();
+  const { toggleSidebar } = useDashboardContext()
 
   return (
     <Wrapper>
@@ -25,7 +23,7 @@ const Navbar = () => {
         </div>
       </div>
     </Wrapper>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar

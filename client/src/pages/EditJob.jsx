@@ -3,7 +3,7 @@ const EditJob = () => {
     <div>
       <h1>Edit Job</h1>
     </div>
-  );
-};
+  )
+}
 
-export default EditJob;
+export default EditJob

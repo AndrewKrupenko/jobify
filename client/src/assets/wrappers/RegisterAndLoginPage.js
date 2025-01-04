@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from 'styled-components'
 
 const Wrapper = styled.section`
   min-height: 100vh;
@@ -30,6 +30,6 @@ const Wrapper = styled.section`
     letter-spacing: var(--letter-spacing);
     margin-left: 0.25rem;
   }
-`;
+`
 
-export default Wrapper;
+export default Wrapper

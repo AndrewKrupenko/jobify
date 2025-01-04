@@ -3,7 +3,7 @@ const Stats = () => {
     <div>
       <h1>STATS</h1>
     </div>
-  );
-};
+  )
+}
 
-export default Stats;
+export default Stats
