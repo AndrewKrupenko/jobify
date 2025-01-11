@@ -1,17 +1,13 @@
+import 'express-async-errors' // Handle async errors in express (to avoid using try-catch in every route)
 import * as dotenv from 'dotenv'
 dotenv.config() // Load env variables from .env file
 import express from 'express'
 const app = express()
-import morgan from 'morgan'
-import { nanoid } from 'nanoid'
+import morgan from 'morgan' // HTTP request logger middleware
+import mongoose from 'mongoose' // MongoDB object modeling tool designed to work in an asynchronous environment
 
-const port = process.env.PORT || 5100
-
-// Dummy data
-let jobs = [
-  { id: nanoid(), company: 'apple', position: 'front-end' },
-  { id: nanoid(), company: 'google', position: 'back-end' },
-]
+import jobRouter from './routes/jobRouter.js'
+import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js'
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev')) // HTTP request logger middleware
@@ -19,18 +15,23 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(express.json()) // for parsing application/json
 
-app.get('/', (req, res) => {
-  res.send('Hello World')
+app.use('/api/v1/jobs', jobRouter) // Mount the router at /api/v1/jobs
+
+app.use('*', (req, res) => {
+  res.status(404).json({ msg: 'Not found' })
 })
 
-app.post('/', (req, res) => {
-  res.json({ message: 'Data received', data: req.body })
-})
+app.use(errorHandlerMiddleware) // Error handler middleware (should be the last middleware)
 
-app.get('/api/v1/jobs', (req, res) => {
-  res.status(200).json({ jobs })
-})
+const port = process.env.PORT || 5100
 
-app.listen(port, () => {
-  console.log(`server running on PORT ${port}....`)
-})
+try {
+  await mongoose.connect(process.env.MONGO_URL) // Connect to MongoDB
+
+  app.listen(port, () => {
+    console.log(`server running on PORT ${port}....`)
+  })
+} catch (error) {
+  console.log({ error })
+  process.exit(1) // 1 means process exited with failure
+}
