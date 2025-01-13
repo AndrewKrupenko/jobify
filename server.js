@@ -5,17 +5,22 @@ import express from 'express'
 const app = express()
 import morgan from 'morgan' // HTTP request logger middleware
 import mongoose from 'mongoose' // MongoDB object modeling tool designed to work in an asynchronous environment
+import cookieParser from 'cookie-parser'
 
 import jobRouter from './routes/jobRouter.js'
+import authRouter from './routes/authRouter.js'
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js'
+import { authenticateUser } from './middleware/authMiddleware.js'
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev')) // HTTP request logger middleware
 }
 
+app.use(cookieParser()) // Parse cookies
 app.use(express.json()) // for parsing application/json
 
-app.use('/api/v1/jobs', jobRouter) // Mount the router at /api/v1/jobs
+app.use('/api/v1/jobs', authenticateUser, jobRouter) // Authenticate user before accessing job routes
+app.use('/api/v1/auth', authRouter) // Authentication routes
 
 app.use('*', (req, res) => {
   res.status(404).json({ msg: 'Not found' })
