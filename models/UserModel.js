@@ -19,4 +19,12 @@ const UserSchema = new mongoose.Schema({
   },
 })
 
+// toJSON method is called every time we send the user object in the response
+UserSchema.methods.toJSON = function () {
+  const obj = this.toObject() // Convert Mongoose document to plain JS object
+  delete obj.password
+
+  return obj // Return the object without the password field
+}
+
 export default mongoose.model('User', UserSchema)
