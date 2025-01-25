@@ -12,4 +12,14 @@ export default defineConfig({
       utils: '/src/utils',
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        // Proxy /api requests to http://localhost:5100/api
+        target: 'http://localhost:5100/api',
+        changeOrigin: true, // Change the origin of the host header to the target URL
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
 })
