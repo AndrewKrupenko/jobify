@@ -34,3 +34,20 @@ export const loginAction = async ({ request }) => {
     return error
   }
 }
+
+export const logoutAction = async () => {
+  await customFetch.get('/auth/logout')
+  toast.success('Logged out')
+}
+
+export const dashboardLoader = async () => {
+  try {
+    const { data } = await customFetch('/users/current-user')
+
+    return data
+  } catch (error) {
+    console.error({ error })
+
+    return redirect('/')
+  }
+}

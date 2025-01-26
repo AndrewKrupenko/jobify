@@ -1,15 +1,17 @@
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLoaderData, useNavigate } from 'react-router-dom'
 import { useState, createContext, useContext } from 'react'
 
 import Wrapper from 'assets/wrappers/Dashboard'
 import { Navbar, BigSidebar, SmallSidebar } from 'components'
 import { checkDefaultTheme } from '../App.jsx'
+import { logoutAction } from 'utils/actions'
 
 const DashboardContext = createContext()
 
 const Dashboard = () => {
-  // temp
-  const user = { name: 'john' }
+  const navigate = useNavigate()
+
+  const { user } = useLoaderData()
 
   const [showSidebar, setShowSidebar] = useState(false)
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme())
@@ -27,7 +29,8 @@ const Dashboard = () => {
   }
 
   const logoutUser = async () => {
-    console.log('logout user')
+    await logoutAction()
+    navigate('/')
   }
 
   return (
@@ -48,7 +51,7 @@ const Dashboard = () => {
           <div>
             <Navbar />
             <div className="dashboard-page">
-              <Outlet />
+              <Outlet context={{ user }} />
             </div>
           </div>
         </main>
