@@ -12,7 +12,8 @@ import {
   AllJobs,
   Profile,
   Admin,
-} from './pages'
+} from 'pages'
+import { loginAction, registerAction } from 'utils/actions.js'
 
 export const checkDefaultTheme = () => {
   const isDarkTheme = localStorage.getItem('darkTheme') === 'true'
@@ -34,10 +35,12 @@ const router = createBrowserRouter([
       {
         path: 'register',
         element: <Register />,
+        action: registerAction,
       },
       {
         path: 'login',
         element: <Login />,
+        action: loginAction,
       },
       {
         path: 'dashboard',
