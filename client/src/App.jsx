@@ -12,11 +12,14 @@ import {
   AllJobs,
   Profile,
   Admin,
+  EditJob,
 } from 'pages'
 import {
   addJobAction,
   allJobsLoader,
   dashboardLoader,
+  editJobAction,
+  editJobLoader,
   loginAction,
   registerAction,
 } from 'utils/actions.js'
@@ -72,6 +75,12 @@ const router = createBrowserRouter([
           {
             path: 'admin',
             element: <Admin />,
+          },
+          {
+            path: 'edit-job/:id',
+            element: <EditJob />,
+            loader: editJobLoader,
+            action: editJobAction,
           },
         ],
       },
