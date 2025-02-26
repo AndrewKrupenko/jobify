@@ -13,7 +13,13 @@ import {
   Profile,
   Admin,
 } from 'pages'
-import { dashboardLoader, loginAction, registerAction } from 'utils/actions.js'
+import {
+  addJobAction,
+  allJobsLoader,
+  dashboardLoader,
+  loginAction,
+  registerAction,
+} from 'utils/actions.js'
 
 export const checkDefaultTheme = () => {
   const isDarkTheme = localStorage.getItem('darkTheme') === 'true'
@@ -50,11 +56,13 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <AddJob />,
+            action: addJobAction,
           },
           { path: 'stats', element: <Stats /> },
           {
             path: 'all-jobs',
             element: <AllJobs />,
+            loader: allJobsLoader,
           },
 
           {

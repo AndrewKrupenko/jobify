@@ -247,6 +247,9 @@ button:disabled {
   letter-spacing: var(--letter-spacing);
   line-height: 1.5;
 }
+.form-select {
+  text-transform: capitalize;
+}
 .form-input,
 .form-textarea,
 .form-select {
