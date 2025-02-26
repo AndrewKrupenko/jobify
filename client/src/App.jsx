@@ -16,6 +16,7 @@ import {
 } from 'pages'
 import {
   addJobAction,
+  adminLoader,
   allJobsLoader,
   dashboardLoader,
   deleteJobAction,
@@ -76,6 +77,7 @@ const router = createBrowserRouter([
           {
             path: 'admin',
             element: <Admin />,
+            loader: adminLoader,
           },
           {
             path: 'edit-job/:id',
