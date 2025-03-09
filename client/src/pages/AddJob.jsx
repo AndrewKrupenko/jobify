@@ -1,15 +1,13 @@
-import { Form, useNavigation } from 'react-router-dom'
+import { Form } from 'react-router-dom'
 import { useOutletContext } from 'react-router-dom'
 
-import { FormRow } from 'components'
+import { FormRow, SubmitBtn } from 'components'
 import Wrapper from 'assets/wrappers/DashboardFormPage'
 import { FormRowSelect } from 'components/index'
 import { JOB_STATUS, JOB_TYPE } from '../../../utils/constants.js'
 
 const AddJob = () => {
   const { user } = useOutletContext()
-  const navigation = useNavigation()
-  const isSubmitting = navigation.state === 'submitting'
 
   return (
     <Wrapper>
@@ -41,13 +39,7 @@ const AddJob = () => {
             />
           </div>
 
-          <button
-            type="submit"
-            className="btn btn-block form-btn "
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Submitting...' : 'Submit'}
-          </button>
+          <SubmitBtn formBtn />
         </div>
       </Form>
     </Wrapper>

@@ -1,12 +1,9 @@
-import { Form, useNavigation, Link } from 'react-router-dom'
+import { Form, Link } from 'react-router-dom'
 
-import { Logo, FormRow } from 'components'
+import { Logo, FormRow, SubmitBtn } from 'components'
 import Wrapper from 'assets/wrappers/RegisterAndLoginPage'
 
 const Register = () => {
-  const navigation = useNavigation()
-  const isSubmitting = navigation.state === 'submitting'
-
   return (
     <Wrapper>
       <Form method="post" className="form">
@@ -24,9 +21,8 @@ const Register = () => {
 
         <FormRow type="password" name="password" defaultValue="secret123" />
 
-        <button type="submit" className="btn btn-block" disabled={isSubmitting}>
-          {isSubmitting ? 'Submitting...' : 'Submit'}
-        </button>
+        <SubmitBtn />
+
         <p>
           Already a member?
           <Link to="/login" className="member-btn">
