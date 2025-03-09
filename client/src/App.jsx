@@ -23,6 +23,7 @@ import {
   editJobAction,
   editJobLoader,
   loginAction,
+  profileAction,
   registerAction,
 } from 'utils/actions.js'
 
@@ -73,6 +74,7 @@ const router = createBrowserRouter([
           {
             path: 'profile',
             element: <Profile />,
+            action: profileAction,
           },
           {
             path: 'admin',

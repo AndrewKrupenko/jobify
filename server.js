@@ -6,16 +6,36 @@ const app = express()
 import morgan from 'morgan' // HTTP request logger middleware
 import mongoose from 'mongoose' // MongoDB object modeling tool designed to work in an asynchronous environment
 import cookieParser from 'cookie-parser'
+import cloudinary from 'cloudinary' // Cloudinary is a cloud service that offers a solution to a web application's entire image management pipeline
 
+// public
+import { dirname } from 'path'
+import { fileURLToPath } from 'url'
+import path from 'path'
+
+// routes
 import jobRouter from './routes/jobRouter.js'
 import authRouter from './routes/authRouter.js'
+import userRouter from './routes/userRouter.js'
+
+// middleware
 import errorHandlerMiddleware from './middleware/errorHandlerMiddleware.js'
 import { authenticateUser } from './middleware/authMiddleware.js'
-import userRouter from './routes/userRouter.js'
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+})
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
 
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev')) // HTTP request logger middleware
 }
+
+// Serve static files from the public folder (like images, css, js)
+app.use(express.static(path.resolve(__dirname, './public')))
 
 app.use(cookieParser()) // Parse cookies
 app.use(express.json()) // for parsing application/json

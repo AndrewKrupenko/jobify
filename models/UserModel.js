@@ -17,6 +17,8 @@ const UserSchema = new mongoose.Schema({
     enum: ['user', 'admin'],
     default: 'user',
   },
+  avatar: String,
+  avatarPublicId: String,
 })
 
 // toJSON method is called every time we send the user object in the response

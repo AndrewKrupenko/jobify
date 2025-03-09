@@ -1,4 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
+import cloudinary from 'cloudinary'
+import { promises as fs } from 'fs'
 
 import UserModel from '../models/UserModel.js'
 import JobModel from '../models/JobModel.js'
@@ -19,10 +21,26 @@ export const getApplicationStats = async (req, res) => {
 }
 
 export const updateUser = async (req, res) => {
-  const obj = { ...req.body }
-  delete obj.password // Make sure that the password is not updated
+  const newUser = { ...req.body }
+  delete newUser.password // Make sure that the password is not updated
 
-  const updatedUser = await UserModel.findByIdAndUpdate(req.user.userId, obj)
+  // Only when the user uploads a new avatar
+  if (req.file) {
+    const response = await cloudinary.v2.uploader.upload(req.file.path) // Upload the file to Cloudinary
+    await fs.unlink(req.file.path) // Delete the file from the server
+    newUser.avatar = response.secure_url // Save the image URL
+    newUser.avatarPublicId = response.public_id // Save the image public ID
+  }
+
+  const updatedUser = await UserModel.findByIdAndUpdate(
+    req.user.userId,
+    newUser,
+  )
+
+  // If the user had an avatar and uploaded a new one - delete the old avatar from Cloudinary
+  if (req.file && updatedUser.avatarPublicId) {
+    await cloudinary.v2.uploader.destroy(updatedUser.avatarPublicId) // Delete the image from Cloudinary
+  }
 
   res.status(StatusCodes.OK).json({ msg: 'User updated' })
 }
