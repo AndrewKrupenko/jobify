@@ -150,3 +150,30 @@ export const profileAction = async ({ request }) => {
 
   return null
 }
+
+/*
+Demo User Data:
+{
+    "name": "Zippy",
+    "email": "test@test.com",
+    "password": "secret123",
+    "lastName": "ShakeAndBake",
+    "location": "Codeville"
+}
+*/
+
+export const loginDemoUser = async ({ navigate }) => {
+  const data = {
+    email: 'test@test.com',
+    password: 'secret123',
+  }
+
+  try {
+    await customFetch.post('/auth/login', data)
+    toast.success('Take a test drive')
+
+    navigate('/dashboard')
+  } catch (error) {
+    toast.error(error?.response?.data?.msg)
+  }
+}
