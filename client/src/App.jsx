@@ -25,6 +25,7 @@ import {
   loginAction,
   profileAction,
   registerAction,
+  statsLoader,
 } from 'utils/actions.js'
 
 export const checkDefaultTheme = () => {
@@ -64,7 +65,7 @@ const router = createBrowserRouter([
             element: <AddJob />,
             action: addJobAction,
           },
-          { path: 'stats', element: <Stats /> },
+          { path: 'stats', element: <Stats />, loader: statsLoader },
           {
             path: 'all-jobs',
             element: <AllJobs />,

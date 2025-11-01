@@ -7,6 +7,7 @@ import {
   createJob,
   updateJob,
   deleteJob,
+  showStats,
 } from '../controllers/jobController.js'
 import {
   validateIdParam,
@@ -18,6 +19,9 @@ router
   .route('/')
   .get(getAllJobs)
   .post(checkForTestUser, validateJobInput, createJob)
+
+// Place the /stats route before the /:id route to avoid conflicts with the /:id route handler
+router.route('/stats').get(showStats) // GET /api/jobs/stats
 
 router
   .route('/:id')

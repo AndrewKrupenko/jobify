@@ -24,20 +24,18 @@ const AddJob = () => {
             defaultValue={user.location}
           />
 
-          <div className="form-row">
-            <FormRowSelect
-              labelText="Job status"
-              name="jobStatus"
-              defaultValue={JOB_STATUS.PENDING}
-              list={Object.values(JOB_STATUS)}
-            />
-            <FormRowSelect
-              name="jobType"
-              labelText="Job type"
-              defaultValue={JOB_TYPE.FULL_TIME}
-              list={Object.values(JOB_TYPE)}
-            />
-          </div>
+          <FormRowSelect
+            labelText="Job status"
+            name="jobStatus"
+            defaultValue={JOB_STATUS.PENDING}
+            list={Object.values(JOB_STATUS)}
+          />
+          <FormRowSelect
+            name="jobType"
+            labelText="Job type"
+            defaultValue={JOB_TYPE.FULL_TIME}
+            list={Object.values(JOB_TYPE)}
+          />
 
           <SubmitBtn formBtn />
         </div>
