@@ -1,7 +1,7 @@
 import { toast } from 'react-toastify'
 import { redirect } from 'react-router-dom'
 
-import customFetch from './customFetch.js'
+import customFetch from 'utils/customFetch'
 
 export const registerAction = async ({ request }) => {
   const formData = await request.formData()
