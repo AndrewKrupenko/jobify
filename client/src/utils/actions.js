@@ -52,11 +52,18 @@ export const dashboardLoader = async () => {
   }
 }
 
-export const allJobsLoader = async () => {
+export const allJobsLoader = async ({ request }) => {
   try {
-    const { data } = await customFetch.get('/jobs')
+    const params = Object.fromEntries([
+      ...new URL(request.url).searchParams.entries(),
+    ])
 
-    return { data }
+    const { data } = await customFetch.get('/jobs', { params })
+
+    return {
+      data,
+      searchValues: { ...params },
+    }
   } catch (error) {
     toast.error(error?.response?.data?.msg)
 
