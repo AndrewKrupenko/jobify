@@ -44,6 +44,10 @@ app.use('/api/v1/jobs', authenticateUser, jobRouter) // Authenticate user before
 app.use('/api/v1/users', authenticateUser, userRouter) // Authenticate user before accessing user routes
 app.use('/api/v1/auth', authRouter) // Authentication routes
 
+app.get('*', (req, res) => {
+  res.sendFile(path.resolve(__dirname, './public', 'index.html')) // path to the built frontend file, which was built on the client
+})
+
 app.use('*', (req, res) => {
   res.status(404).json({ msg: 'Not found' })
 })
