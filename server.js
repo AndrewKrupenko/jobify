@@ -34,8 +34,8 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev')) // HTTP request logger middleware
 }
 
-// Serve static files from the public folder (like images, css, js)
-app.use(express.static(path.resolve(__dirname, './public')))
+// The location of the FE build
+app.use(express.static(path.resolve(__dirname, './client/dist')))
 
 app.use(cookieParser()) // Parse cookies
 app.use(express.json()) // for parsing application/json
@@ -45,7 +45,7 @@ app.use('/api/v1/users', authenticateUser, userRouter) // Authenticate user befo
 app.use('/api/v1/auth', authRouter) // Authentication routes
 
 app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, './public', 'index.html')) // path to the built frontend file, which was built on the client
+  res.sendFile(path.resolve(__dirname, './client/dist', 'index.html')) // path to the built frontend file
 })
 
 app.use('*', (req, res) => {
