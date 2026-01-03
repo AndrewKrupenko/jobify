@@ -1,9 +1,9 @@
 import { StatusCodes } from 'http-status-codes'
 import cloudinary from 'cloudinary'
-import { promises as fs } from 'fs'
 
 import UserModel from '../models/UserModel.js'
 import JobModel from '../models/JobModel.js'
+import { formatImage } from '../middleware/multerMiddleware.js'
 
 export const getCurrentUser = async (req, res) => {
   const user = await UserModel.findOne({ _id: req.user.userId })
@@ -26,8 +26,8 @@ export const updateUser = async (req, res) => {
 
   // Only when the user uploads a new avatar
   if (req.file) {
-    const response = await cloudinary.v2.uploader.upload(req.file.path) // Upload the file to Cloudinary
-    await fs.unlink(req.file.path) // Delete the file from the server
+    const file = formatImage(req.file)
+    const response = await cloudinary.v2.uploader.upload(file)
     newUser.avatar = response.secure_url // Save the image URL
     newUser.avatarPublicId = response.public_id // Save the image public ID
   }
