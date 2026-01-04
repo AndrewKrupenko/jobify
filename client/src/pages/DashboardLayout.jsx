@@ -1,27 +1,26 @@
-import {
-  Outlet,
-  useLoaderData,
-  useNavigate,
-  useNavigation,
-} from 'react-router-dom'
-import { useState, createContext, useContext } from 'react'
+import { Outlet, useNavigate, useNavigation } from 'react-router-dom'
+import { useState, createContext, useContext, useEffect } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { toast } from 'react-toastify'
 
 import Wrapper from 'assets/wrappers/Dashboard'
 import { Navbar, BigSidebar, SmallSidebar, Loading } from 'components'
 import { checkDefaultTheme } from '../App.jsx'
-import { logoutAction } from 'utils/actions'
+import { logoutAction, userQuery } from 'utils/actions'
+import customFetch from 'utils/customFetch'
 
 const DashboardContext = createContext()
 
-const Dashboard = () => {
+const DashboardLayout = ({ queryClient }) => {
   const navigate = useNavigate()
   const navigation = useNavigation()
   const isPageLoading = navigation.state === 'loading'
 
-  const { user } = useLoaderData()
+  const { user } = useQuery(userQuery)?.data
 
   const [showSidebar, setShowSidebar] = useState(false)
   const [isDarkTheme, setIsDarkTheme] = useState(checkDefaultTheme())
+  const [isAuthError, setIsAuthError] = useState(false)
 
   const toggleDarkTheme = () => {
     const newThemeValue = !isDarkTheme
@@ -36,9 +35,29 @@ const Dashboard = () => {
   }
 
   const logoutUser = async () => {
-    await logoutAction()
+    await logoutAction(queryClient)
+    toast.success('Logged out')
     navigate('/')
   }
+
+  customFetch.interceptors.response.use(
+    (response) => {
+      return response
+    },
+    (error) => {
+      if (error?.response?.status === 401) {
+        setIsAuthError(true)
+      }
+
+      return Promise.reject(error)
+    },
+  )
+
+  useEffect(() => {
+    if (!isAuthError) return
+
+    logoutUser()
+  }, [isAuthError])
 
   return (
     <DashboardContext.Provider
@@ -69,4 +88,4 @@ const Dashboard = () => {
 
 export const useDashboardContext = () => useContext(DashboardContext)
 
-export default Dashboard
+export default DashboardLayout

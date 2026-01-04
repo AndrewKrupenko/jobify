@@ -19,32 +19,43 @@ export const registerAction = async ({ request }) => {
   }
 }
 
-export const loginAction = async ({ request }) => {
-  const formData = await request.formData()
-  const data = Object.fromEntries(formData)
+export const loginAction =
+  (queryClient) =>
+  async ({ request }) => {
+    const formData = await request.formData()
+    const data = Object.fromEntries(formData)
 
-  try {
-    await customFetch.post('/auth/login', data)
-    toast.success('Login successful')
+    try {
+      await customFetch.post('/auth/login', data)
+      queryClient.invalidateQueries()
+      toast.success('Login successful')
 
-    return redirect('/dashboard')
-  } catch (error) {
-    toast.error(error?.response?.data?.msg)
+      return redirect('/dashboard')
+    } catch (error) {
+      toast.error(error?.response?.data?.msg)
 
-    return error
+      return error
+    }
   }
-}
 
-export const logoutAction = async () => {
+export const logoutAction = (queryClient) => async () => {
   await customFetch.get('/auth/logout')
-  toast.success('Logged out')
+  queryClient.invalidateQueries()
 }
 
-export const dashboardLoader = async () => {
-  try {
+export const userQuery = {
+  queryKey: ['user'],
+  queryFn: async () => {
     const { data } = await customFetch('/users/current-user')
 
     return data
+  },
+}
+
+// Loader must be a function that returns the function (to implement @tanstack/react-query)
+export const dashboardLoader = (queryClient) => async () => {
+  try {
+    return await queryClient.ensureQueryData(userQuery)
   } catch (error) {
     console.error({ error })
 
@@ -52,79 +63,115 @@ export const dashboardLoader = async () => {
   }
 }
 
-export const allJobsLoader = async ({ request }) => {
-  try {
+export const allJobsQuery = (params) => {
+  const { search, jobStatus, jobType, sort, page } = params
+
+  return {
+    queryKey: [
+      'jobs',
+      search ?? '',
+      jobStatus ?? 'all',
+      jobType ?? 'all',
+      sort ?? 'newest',
+      page ?? 1,
+    ],
+    queryFn: async () => {
+      const { data } = await customFetch.get('/jobs', {
+        params,
+      })
+
+      return data
+    },
+  }
+}
+
+export const allJobsLoader =
+  (queryClient) =>
+  async ({ request }) => {
     const params = Object.fromEntries([
       ...new URL(request.url).searchParams.entries(),
     ])
 
-    const { data } = await customFetch.get('/jobs', { params })
+    await queryClient.ensureQueryData(allJobsQuery(params))
+    return { searchValues: { ...params } }
+  }
 
-    return {
-      data,
-      searchValues: { ...params },
+export const addJobAction =
+  (queryClient) =>
+  async ({ request }) => {
+    const formData = await request.formData()
+    const data = Object.fromEntries(formData)
+
+    try {
+      await customFetch.post('/jobs', data)
+      queryClient.invalidateQueries(['jobs'])
+      toast.success('Job added successfully')
+
+      return redirect('all-jobs')
+    } catch (error) {
+      toast.error(error?.response?.data?.msg)
+
+      return error
     }
-  } catch (error) {
-    toast.error(error?.response?.data?.msg)
+  }
 
-    return error
+export const singleJobQuery = (id) => {
+  return {
+    queryKey: ['job', id],
+    queryFn: async () => {
+      const { data } = await customFetch.get(`/jobs/${id}`)
+
+      return data
+    },
   }
 }
 
-export const addJobAction = async ({ request }) => {
-  const formData = await request.formData()
-  const data = Object.fromEntries(formData)
+export const editJobLoader =
+  (queryClient) =>
+  async ({ params }) => {
+    try {
+      await queryClient.ensureQueryData(singleJobQuery(params.id))
 
-  try {
-    await customFetch.post('/jobs', data)
-    toast.success('Job added successfully')
+      return params.id
+    } catch (error) {
+      toast.error(error?.response?.data?.msg)
 
-    return redirect('all-jobs')
-  } catch (error) {
-    toast.error(error?.response?.data?.msg)
-
-    return error
+      return redirect('/dashboard/all-jobs')
+    }
   }
-}
 
-export const editJobLoader = async ({ params }) => {
-  try {
-    const { data } = await customFetch.get(`/jobs/${params.id}`)
+export const editJobAction =
+  (queryClient) =>
+  async ({ request, params }) => {
+    const formData = await request.formData()
+    const data = Object.fromEntries(formData)
 
-    return data
-  } catch (error) {
-    toast.error(error?.response?.data?.msg)
+    try {
+      await customFetch.patch(`/jobs/${params.id}`, data)
+      queryClient.invalidateQueries(['jobs'])
+      toast.success('Job edited successfully')
+
+      return redirect('/dashboard/all-jobs')
+    } catch (error) {
+      toast.error(error?.response?.data?.msg)
+
+      return error
+    }
+  }
+
+export const deleteJobAction =
+  (queryClient) =>
+  async ({ params }) => {
+    try {
+      await customFetch.delete(`/jobs/${params.id}`)
+      queryClient.invalidateQueries(['jobs'])
+      toast.success('Job deleted successfully')
+    } catch (error) {
+      toast.error(error.response.data.msg)
+    }
 
     return redirect('/dashboard/all-jobs')
   }
-}
-
-export const editJobAction = async ({ request, params }) => {
-  const formData = await request.formData()
-  const data = Object.fromEntries(formData)
-
-  try {
-    await customFetch.patch(`/jobs/${params.id}`, data)
-    toast.success('Job edited successfully')
-
-    return redirect('/dashboard/all-jobs')
-  } catch (error) {
-    toast.error(error?.response?.data?.msg)
-
-    return error
-  }
-}
-
-export const deleteJobAction = async ({ params }) => {
-  try {
-    await customFetch.delete(`/jobs/${params.id}`)
-    toast.success('Job deleted successfully')
-  } catch (error) {
-    toast.error(error.response.data.msg)
-  }
-
-  return redirect('/dashboard/all-jobs')
-}
 
 export const adminLoader = async () => {
   try {
@@ -138,25 +185,30 @@ export const adminLoader = async () => {
   }
 }
 
-export const profileAction = async ({ request }) => {
-  const formData = await request.formData()
-  const file = formData.get('avatar')
+export const profileAction =
+  (queryClient) =>
+  async ({ request }) => {
+    const formData = await request.formData()
+    const file = formData.get('avatar')
 
-  if (file && file.size > 500000) {
-    toast.error('Image size is too large')
+    if (file && file.size > 500000) {
+      toast.error('Image size is too large')
 
-    return null
+      return null
+    }
+
+    try {
+      await customFetch.patch('/users/update-user', formData)
+      queryClient.invalidateQueries(['user'])
+      toast.success('Profile updated successfully')
+
+      return redirect('/dashboard')
+    } catch (error) {
+      toast.error(error?.response?.data?.msg)
+
+      return null
+    }
   }
-
-  try {
-    await customFetch.patch('/users/update-user', formData)
-    toast.success('Profile updated successfully')
-  } catch (error) {
-    toast.error(error?.response?.data?.msg)
-  }
-
-  return null
-}
 
 /*
 Demo User Data:
@@ -185,12 +237,16 @@ export const loginDemoUser = async ({ navigate }) => {
   }
 }
 
-export const statsLoader = async () => {
-  try {
+export const statsQuery = {
+  queryKey: ['stats'],
+  queryFn: async () => {
     const response = await customFetch.get('/jobs/stats')
 
     return response.data
-  } catch (error) {
-    return error
-  }
+  },
+}
+
+// Loader must be a function that returns the function (to implement @tanstack/react-query)
+export const statsLoader = (queryClient) => async () => {
+  return await queryClient.ensureQueryData(statsQuery)
 }
