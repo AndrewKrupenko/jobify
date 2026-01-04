@@ -7,6 +7,8 @@ import morgan from 'morgan' // HTTP request logger middleware
 import mongoose from 'mongoose' // MongoDB object modeling tool designed to work in an asynchronous environment
 import cookieParser from 'cookie-parser'
 import cloudinary from 'cloudinary' // Cloudinary is a cloud service that offers a solution to a web application's entire image management pipeline
+import helmet from 'helmet' // Security
+import mongoSanitize from 'express-mongo-sanitize' // Security
 
 // public
 import { dirname } from 'path'
@@ -39,6 +41,8 @@ app.use(express.static(path.resolve(__dirname, './client/dist')))
 
 app.use(cookieParser()) // Parse cookies
 app.use(express.json()) // for parsing application/json
+app.use(helmet())
+app.use(mongoSanitize())
 
 app.use('/api/v1/jobs', authenticateUser, jobRouter) // Authenticate user before accessing job routes
 app.use('/api/v1/users', authenticateUser, userRouter) // Authenticate user before accessing user routes
